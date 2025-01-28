@@ -1,0 +1,50 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  image: node:14
+  script:
+    - npm ci
+    - npm run build
+
+test:
+  stage: test
+  image: node:14
+  script:
+    - npm ci
+    - npm run test
+
+deploy:
+  stage: deploy
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -t sellenix .
+    - docker push $DOCKER_REGISTRY/sellenix:$CI_COMMIT_SHA
+    - kubectl set image deployment/sellenix sellenix=$DOCKER_REGISTRY/sellenix:$CI_COMMIT_SHA
+  only:
+    - main
+
+Voor Docker en Kubernetes configuratie, maken we een `Dockerfile` en een Kubernetes deployment configuratie:
+
+```dockerfile file="Dockerfile"
+FROM node:14
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm ci
+
+COPY . .
+
+RUN npm run build
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
+

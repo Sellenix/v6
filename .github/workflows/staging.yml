@@ -1,0 +1,39 @@
+name: Staging Deployment
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run tests
+      run: npm test
+      
+    - name: Build application
+      run: npm run build
+      
+    - name: Deploy to staging
+      env:
+        STAGING_SSH_PRIVATE_KEY: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+        STAGING_HOST: ${{ secrets.STAGING_HOST }}
+        STAGING_USER: ${{ secrets.STAGING_USER }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "$STAGING_SSH_PRIVATE_KEY" > ~/.ssh/staging.key
+        chmod 600 ~/.ssh/staging.key
+        scp -i ~/.ssh/staging.key -r .next package.json $STAGING_USER@$STAGING_HOST:/path/to/staging/directory
+        ssh -i ~/.ssh/staging.key $STAGING_USER@$STAGING_HOST "cd /path/to/staging/directory && npm install --production && pm2 restart sellenix-staging"
+

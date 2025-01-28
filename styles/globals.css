@@ -1,0 +1,33 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cyberpunk-neon: #00ff00;
+  --cyberpunk-purple: #800080;
+  --cyberpunk-blue: #00ffff;
+  --cyberpunk-pink: #ff00ff;
+  --cyberpunk-yellow: #ffff00;
+}
+
+body {
+  font-family: "Orbitron", sans-serif;
+}
+
+.cyberpunk-bg {
+  background: linear-gradient(45deg, #000, #1a1a1a);
+}
+
+.cyberpunk-text-glow {
+  text-shadow: 0 0 5px var(--cyberpunk-neon), 0 0 10px var(--cyberpunk-neon);
+}
+
+.cyberpunk-border {
+  border: 2px solid var(--cyberpunk-neon);
+  box-shadow: 0 0 10px var(--cyberpunk-neon);
+}
+
+/* Add more cyberpunk-themed classes as needed */
+

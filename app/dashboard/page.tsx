@@ -26,7 +26,7 @@ export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null)
   const [seoData, setSeoData] = useState<SEOData[]>([])
   const [loading, setLoading] = useState(true)
-  const socket = useSocket()
+  const { socket } = useSocket()
 
   useEffect(() => {
     fetchDashboardData()
@@ -62,7 +62,7 @@ export default function Dashboard() {
     }
   }
 
-  const handleDashboardUpdate = (data) => {
+  const handleDashboardUpdate = (data: any) => {
     if (data.seoData) {
       setSeoData(data.seoData)
     }
